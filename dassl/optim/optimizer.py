@@ -58,6 +58,7 @@ def build_optimizer(model, optim_cfg):
         new_params = []
 
         for name, module in model.named_children():
+            # print(f"model layers--{name}")
             if name in new_layers:
                 new_params += [p for p in module.parameters()]
             else:
@@ -73,6 +74,12 @@ def build_optimizer(model, optim_cfg):
                 'params': new_params
             },
         ]
+        # TODO: zhaoxin
+        print(
+            'base_params: {}, new_params: {}'.format(
+                len(param_groups[0]['params']), len(param_groups[1]['params'])
+            )
+        )
 
     else:
         param_groups = model.parameters()

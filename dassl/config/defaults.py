@@ -12,6 +12,7 @@ _C.VERSION = 1
 _C.OUTPUT_DIR = './output'
 # Path to a directory where the files were saved
 _C.RESUME = ''
+_C.TRAIN_FROM_SCRATCH = False
 _C.SEED = 1
 _C.USE_CUDA = True
 # Print detailed information (e.g. what trainer,

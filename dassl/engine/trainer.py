@@ -352,7 +352,8 @@ class SimpleTrainer(TrainerBase):
         directory = self.cfg.OUTPUT_DIR
         if self.cfg.RESUME:
             directory = self.cfg.RESUME
-        self.start_epoch = self.resume_model_if_exist(directory)
+        if not self.cfg.TRAIN_FROM_SCRATCH:
+            self.start_epoch = self.resume_model_if_exist(directory)
 
         # Initialize summary writer
         self.init_writer(self.output_dir)
