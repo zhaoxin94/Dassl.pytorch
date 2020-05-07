@@ -207,9 +207,9 @@ class TrainerBase:
 
     def write_scalar(self, tag, scalar_value, global_step=None):
         if self._writer is None:
-            raise AttributeError(
-                'There is not writer. Please call init_writer() to create the writer.'
-            )
+            # Do nothing if writer is not initialized
+            # Note that writer is only used when training is needed
+            pass
         else:
             self._writer.add_scalar(tag, scalar_value, global_step)
 
@@ -296,7 +296,6 @@ class SimpleTrainer(TrainerBase):
         self.build_data_loader()
         self.build_model()
         self.evaluator = build_evaluator(cfg, lab2cname=self.dm.lab2cname)
-        self.init_writer(self.output_dir)
 
     def check_cfg(self, cfg):
         """Check whether some variables are set correctly for
@@ -355,6 +354,9 @@ class SimpleTrainer(TrainerBase):
             directory = self.cfg.RESUME
         if not self.cfg.TRAIN_FROM_SCRATCH:
             self.start_epoch = self.resume_model_if_exist(directory)
+
+        # Initialize summary writer
+        self.init_writer(self.output_dir)
 
         # Remember the starting time (for computing the elapsed time)
         self.time_start = time.time()
@@ -479,9 +481,9 @@ class TrainerXU(SimpleTrainer):
                 batch_u = next(train_loader_u_iter)
 
             data_time.update(time.time() - end)
-            loss_dict = self.forward_backward(batch_x, batch_u)
+            loss_summary = self.forward_backward(batch_x, batch_u)
             batch_time.update(time.time() - end)
-            losses.update(loss_dict)
+            losses.update(loss_summary)
 
             if (self.batch_idx + 1) % self.cfg.TRAIN.PRINT_FREQ == 0:
                 nb_this_epoch = self.num_batches - (self.batch_idx + 1)
@@ -540,9 +542,9 @@ class TrainerX(SimpleTrainer):
         end = time.time()
         for self.batch_idx, batch in enumerate(self.train_loader_x):
             data_time.update(time.time() - end)
-            loss_dict = self.forward_backward(batch)
+            loss_summary = self.forward_backward(batch)
             batch_time.update(time.time() - end)
-            losses.update(loss_dict)
+            losses.update(loss_summary)
 
             if (self.batch_idx + 1) % self.cfg.TRAIN.PRINT_FREQ == 0:
                 nb_this_epoch = self.num_batches - (self.batch_idx + 1)

@@ -14,15 +14,15 @@ class Vanilla(TrainerX):
         loss = F.cross_entropy(output, label)
         self.model_backward_and_update(loss)
 
-        output_dict = {
+        loss_summary = {
             'loss': loss.item(),
-            'acc': compute_accuracy(output.detach(), label)[0].item()
+            'acc': compute_accuracy(output, label)[0].item()
         }
 
         if (self.batch_idx + 1) == self.num_batches:
             self.update_lr()
 
-        return output_dict
+        return loss_summary
 
     def parse_batch_train(self, batch):
         input = batch['img']

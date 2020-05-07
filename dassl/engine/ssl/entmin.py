@@ -29,13 +29,13 @@ class EntMin(TrainerXU):
 
         self.model_backward_and_update(loss)
 
-        output_dict = {
+        loss_summary = {
             'loss_x': loss_x.item(),
-            'acc_x': compute_accuracy(output_x.detach(), label_x)[0].item(),
+            'acc_x': compute_accuracy(output_x, label_x)[0].item(),
             'loss_u': loss_u.item()
         }
 
         if (self.batch_idx + 1) == self.num_batches:
             self.update_lr()
 
-        return output_dict
+        return loss_summary
