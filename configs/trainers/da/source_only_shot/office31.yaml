@@ -1,0 +1,32 @@
+TRAIN_FROM_SCRATCH: True
+
+DATALOADER:
+  TRAIN_X:
+    BATCH_SIZE: 64
+  TEST:
+    BATCH_SIZE: 128
+
+OPTIM:
+  NAME: 'sgd'
+  LR: 0.01
+  MAX_EPOCH: 30
+  STAGED_LR: True
+  NEW_LAYERS: ('head', 'classifier')
+
+TRAINER:
+  SHOT:
+    PAR: 0.3
+
+MODEL:
+  INIT_WEIGHTS: ''
+  BACKBONE:
+    NAME: 'resnet50'
+  HEAD:
+    NAME: 'mlp'
+    HIDDEN_LAYERS: [256]
+    DROPOUT: 0.5
+  CLASSIFIER:
+    TYPE: 'weight'
+
+TRAIN:
+  PRINT_FREQ: 2

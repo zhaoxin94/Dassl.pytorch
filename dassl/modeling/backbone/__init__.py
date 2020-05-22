@@ -17,3 +17,6 @@ from .shufflenetv2 import (
 )
 from .preact_resnet18 import preact_resnet18
 from .cnn_digit5_m3sda import cnn_digit5_m3sda
+from .dtn import dtn
+from .lenet import lenet
+

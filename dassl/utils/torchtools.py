@@ -15,7 +15,8 @@ from .tools import mkdir_if_missing
 __all__ = [
     'save_checkpoint', 'load_checkpoint', 'resume_from_checkpoint',
     'open_all_layers', 'open_specified_layers', 'count_num_param',
-    'load_pretrained_weights', 'init_network_weights'
+    'load_pretrained_weights', 'init_network_weights',
+    'load_specified_pretrained_weights'
 ]
 
 
@@ -326,3 +327,63 @@ def init_network_weights(model, init_type='normal', gain=0.02):
                 nn.init.constant_(m.bias.data, 0.0)
 
     model.apply(_init_func)
+
+
+def load_specified_pretrained_weights(model, weight_path, specified=[]):
+    r"""Load pretrianed weights to model.
+
+    Features::
+        - Incompatible layers (unmatched in name or size) will be ignored.
+        - Can automatically deal with keys containing "module.".
+
+    Args:
+        model (nn.Module): network model.
+        weight_path (str): path to pretrained weights.
+
+    Examples::
+        >>> weight_path = 'log/my_model/model-best.pth.tar'
+        >>> load_pretrained_weights(model, weight_path)
+    """
+    checkpoint = load_checkpoint(weight_path)
+    if 'state_dict' in checkpoint:
+        state_dict = checkpoint['state_dict']
+    else:
+        state_dict = checkpoint
+
+    model_dict = model.state_dict()
+    new_state_dict = OrderedDict()
+    matched_layers, discarded_layers = [], []
+
+    for k, v in state_dict.items():
+        matched = False
+        if k.startswith('module.'):
+            k = k[7:] # discard module.
+        for m in specified:
+            if k.startswith(m) and k in model_dict and model_dict[k].size(
+            ) == v.size():
+                new_state_dict[k] = v
+                matched_layers.append(k)
+                matched = True
+        if not matched:
+            discarded_layers.append(k)
+
+    model_dict.update(new_state_dict)
+    model.load_state_dict(model_dict)
+
+    if len(matched_layers) == 0:
+        warnings.warn(
+            'The pretrained weights "{}" cannot be loaded, '
+            'please check the key names manually '
+            '(** ignored and continue **)'.format(weight_path)
+        )
+    else:
+        print(
+            'Successfully loaded pretrained weights from "{}"'.
+            format(weight_path)
+        )
+        if len(discarded_layers) > 0:
+            print(
+                '** The following layers are discarded '
+                'due to unmatched keys or layer size: {}'.
+                format(discarded_layers)
+            )

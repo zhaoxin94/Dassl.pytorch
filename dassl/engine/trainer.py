@@ -5,6 +5,7 @@ from collections import OrderedDict
 import torch
 import torch.nn as nn
 from torch.utils.tensorboard import SummaryWriter
+import torch.nn.utils.weight_norm as weightNorm
 
 from dassl.data import DataManager
 from dassl.optim import build_optimizer, build_lr_scheduler
@@ -21,7 +22,7 @@ class SimpleNet(nn.Module):
     and optionally a head such as mlp for classification.
     """
 
-    def __init__(self, cfg, model_cfg, num_classes, **kwargs):
+    def __init__(self, cfg, model_cfg, num_classes, classifier_type, **kwargs):
         super().__init__()
         self.backbone = build_backbone(
             model_cfg.BACKBONE.NAME,
@@ -47,7 +48,10 @@ class SimpleNet(nn.Module):
 
         self.classifier = None
         if num_classes > 0:
-            self.classifier = nn.Linear(fdim, num_classes)
+            if classifier_type == 'linear':
+                self.classifier = nn.Linear(fdim, num_classes)
+            elif classifier_type == 'weight':
+                self.classifier = weightNorm(nn.Linear(fdim, num_classes))
 
         self._fdim = fdim
 
@@ -335,7 +339,9 @@ class SimpleTrainer(TrainerBase):
         cfg = self.cfg
 
         print('Building model')
-        self.model = SimpleNet(cfg, cfg.MODEL, self.num_classes)
+        self.model = SimpleNet(
+            cfg, cfg.MODEL, self.num_classes, cfg.MODEL.CLASSIFIER.TYPE
+        )
         if cfg.MODEL.INIT_WEIGHTS:
             load_pretrained_weights(self.model, cfg.MODEL.INIT_WEIGHTS)
         self.model.to(self.device)

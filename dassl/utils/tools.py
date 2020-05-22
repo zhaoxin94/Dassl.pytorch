@@ -99,7 +99,7 @@ def download_url(url, dst):
     sys.stdout.write('\n')
 
 
-def read_image(path):
+def read_image(path, mode='RGB'):
     """Read image from path using ``PIL.Image``.
 
     Args:
@@ -113,7 +113,7 @@ def read_image(path):
 
     while True:
         try:
-            img = Image.open(path).convert('RGB')
+            img = Image.open(path).convert(mode)
             return img
         except IOError:
             print(

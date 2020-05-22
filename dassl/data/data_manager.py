@@ -218,8 +218,8 @@ class DatasetWrapper(TorchDataset):
             'impath': item.impath
         }
 
-        img0 = read_image(item.impath)
-
+        img0 = read_image(item.impath, self.cfg.INPUT.MODE)
+    
         if self.transform is not None:
             if isinstance(self.transform, (list, tuple)):
                 for i, tfm in enumerate(self.transform):

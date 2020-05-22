@@ -24,6 +24,7 @@ _C.VERBOSE = True
 ###########################
 _C.INPUT = CN()
 _C.INPUT.SIZE = (224, 224)
+_C.INPUT.MODE = 'RGB'
 # For available choices please refer to transforms.py
 _C.INPUT.TRANSFORMS = ()
 # If True, tfm_train and tfm_test will be None
@@ -112,6 +113,9 @@ _C.MODEL.HEAD.HIDDEN_LAYERS = ()
 _C.MODEL.HEAD.ACTIVATION = 'relu'
 _C.MODEL.HEAD.BN = True
 _C.MODEL.HEAD.DROPOUT = 0.
+# Classifier
+_C.MODEL.CLASSIFIER = CN()
+_C.MODEL.CLASSIFIER.TYPE = 'linear'
 
 ###########################
 # Optimization
@@ -231,3 +235,7 @@ _C.TRAINER.FIXMATCH = CN()
 _C.TRAINER.FIXMATCH.WEIGHT_U = 1.
 _C.TRAINER.FIXMATCH.CONF_THRE = 0.95
 _C.TRAINER.FIXMATCH.STRONG_TRANSFORMS = ()
+# Shot
+_C.TRAINER.SHOT = CN()
+_C.TRAINER.SHOT.SMOOTH = 0.1
+_C.TRAINER.SHOT.PAR = 0.1
