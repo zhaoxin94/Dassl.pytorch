@@ -519,6 +519,7 @@ class TrainerXU(SimpleTrainer):
             n_iter = self.epoch * self.num_batches + self.batch_idx
             for name, meter in losses.meters.items():
                 self.write_scalar('train/' + name, meter.avg, n_iter)
+            self.write_scalar('train/lr', self.get_current_lr(), n_iter)
 
             end = time.time()
 
@@ -580,6 +581,7 @@ class TrainerX(SimpleTrainer):
             n_iter = self.epoch * self.num_batches + self.batch_idx
             for name, meter in losses.meters.items():
                 self.write_scalar('train/' + name, meter.avg, n_iter)
+            self.write_scalar('train/lr', self.get_current_lr(), n_iter)
 
             end = time.time()
 

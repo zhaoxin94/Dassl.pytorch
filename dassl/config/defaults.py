@@ -12,8 +12,14 @@ _C.VERSION = 1
 _C.OUTPUT_DIR = './output'
 # Path to a directory where the files were saved
 _C.RESUME = ''
+<<<<<<< HEAD
 _C.TRAIN_FROM_SCRATCH = False
 _C.SEED = 1
+=======
+# Set seed to negative value to random everything
+# Set seed to positive value to use a fixed seed
+_C.SEED = -1
+>>>>>>> upstream/master
 _C.USE_CUDA = True
 # Print detailed information (e.g. what trainer,
 # dataset, backbone, etc.)
