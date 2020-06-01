@@ -1,12 +1,17 @@
 #!/bin/bash
 
-DATA="/home/zhao/data/DA"
-
-CUDA_VISIBLE_DEVICES=0 python tools/test.py \
---root $DATA \
---trainer SourceOnly \
---source-domains amazon \
---target-domains webcam \
---dataset-config-file configs/datasets/da/office31.yaml \
---config-file configs/trainers/da/source_only/office31.yaml \
---output-dir output/source_only/office31/a2w
+domain_list="art clipart product real_world"
+for (( i=0; i<1; i++ ))
+do
+    for source_domain in $domain_list
+    do
+        for target_domain in $domain_list
+        do
+            if [ $source_domain != $target_domain ]
+            then
+                output="$source_domain""2""$target_domain"
+                echo $output
+            fi
+        done
+    done
+done

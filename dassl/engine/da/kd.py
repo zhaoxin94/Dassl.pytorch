@@ -7,7 +7,7 @@ import time
 import torch.nn.functional as F
 from scipy.spatial.distance import cdist
 
-from dassl.utils import check_isfile, open_specified_layers
+from dassl.utils import check_isfile, open_specified_layers, open_all_layers
 from dassl.engine import TRAINER_REGISTRY, TrainerXU, SimpleNet
 from dassl.utils import MetricMeter, AverageMeter, load_pretrained_weights, load_specified_pretrained_weights
 from dassl.metrics import compute_accuracy
@@ -69,15 +69,16 @@ class KD(TrainerXU):
 
         load_pretrained_weights(
             self.fix_model,
-            'output/shot_source/office31/a2w/model/model.pth.tar-30'
+            'output/shot_source/office31/d2a/model/model.pth.tar-30'
         )
         self.fix_model.to(self.device)
         self.fix_model.eval()
 
-        self.open_layers = ['backbone']
-        if isinstance(self.model.head, nn.Module):
-            self.open_layers.append('head')
-        open_specified_layers(self.model, self.open_layers)
+        # self.open_layers = ['backbone']
+        # if isinstance(self.model.head, nn.Module):
+        #     self.open_layers.append('head')
+        # open_specified_layers(self.model, self.open_layers)
+        open_all_layers(self.model)
         # self.model.train()
         # TODO: filter out the parameters with 'requires_grad == False' from optimizer
 
@@ -110,15 +111,27 @@ class KD(TrainerXU):
 
         with torch.no_grad():
             outputs_fix = self.fix_model(input_u)
+            soft_output_fix = nn.Softmax(dim=1)(outputs_fix)
+            max_value, predict = torch.max(soft_output_fix, 1)
+            weight = (max_value > 0.9).float().squeeze()
+            assert weight.size(
+            ) == (outputs_fix.size(0), ), 'false weight size'
+            # assert torch.sum(weight) != 0.0
+            # print('select', torch.sum(weight).item(), 'samples')
 
-        T = 1.0
+        T = 3.0
         kd_loss = F.kl_div(
             F.log_softmax(outputs / T, dim=1),
             F.softmax(outputs_fix / T, dim=1),
             reduction='batchmean'
         ) * T * T
 
-        loss = im_loss + 0.3*classifier_loss + kd_loss
+        # kd_loss = torch.sum(
+        #     weight * F.cross_entropy(outputs, predict, reduction='none')
+        # ) / torch.sum(weight + 1e-8)
+
+        # loss = im_loss + 0.3*classifier_loss + kd_loss
+        loss = im_loss + 0.5 * classifier_loss + 0.5 * kd_loss
 
         self.model_backward_and_update(loss)
         loss_summary = {
