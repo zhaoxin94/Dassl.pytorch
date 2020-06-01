@@ -1,16 +1,13 @@
-# How to Prepare Datasets
+# How to Install Datasets
 
-We suggest you put datasets (of the same task) under the same directory `$DATA`, which looks like
-
-```
+`$DATA` denotes the location where datasets are installed, e.g.
+```bash
 $DATA/
     office31/
     office_home/
     visda17/
     ...
 ```
-
-Please follow the download links and file structures to organize the datasets.
 
 [Domain Adaptation](#domain-adaptation)
 - [Office-31](#office-31)
@@ -42,8 +39,17 @@ File structure:
 ```
 office31/
     amazon/
+        back_pack/
+        bike/
+        ...
     dslr/
+        back_pack/
+        bike/
+        ...
     webcam/
+        back_pack/
+        bike/
+        ...
 ```
 
 ### Office-Home
@@ -111,7 +117,7 @@ digit5/
 Then, run the following command in your terminal under `Dassl.pytorch/datasets/da`,
 
 ```bash 
-python digit5.py $DATA
+python digit5.py $DATA/digit5
 ```
 
 This will extract the data and organize the file structure as
