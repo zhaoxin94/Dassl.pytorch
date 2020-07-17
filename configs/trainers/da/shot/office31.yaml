@@ -18,7 +18,6 @@ TRAINER:
     PAR: 0.3
 
 MODEL:
-  INIT_WEIGHTS: 'output/shot_source/office31/d2a/model/model.pth.tar-30'
   BACKBONE:
     NAME: 'resnet50'
   HEAD:

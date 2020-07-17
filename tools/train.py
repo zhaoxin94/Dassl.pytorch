@@ -51,6 +51,9 @@ def reset_cfg(cfg, args):
     if args.head:
         cfg.MODEL.HEAD.NAME = args.head
 
+    if args.init_weights:
+        cfg.MODEL.INIT_WEIGHTS = args.init_weights
+
 
 def setup_cfg(args):
     cfg = get_cfg_default()
@@ -154,6 +157,9 @@ if __name__ == '__main__':
     )
     parser.add_argument(
         '--no-train', action='store_true', help='do not call trainer.train()'
+    )
+    parser.add_argument(
+        '--init-weights', type=str, default='', help='initial weights'
     )
     parser.add_argument(
         'opts',
