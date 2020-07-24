@@ -1,17 +1,15 @@
 #!/bin/bash
 
-domain_list="art clipart product real_world"
-for (( i=0; i<1; i++ ))
-do
-    for source_domain in $domain_list
-    do
-        for target_domain in $domain_list
-        do
-            if [ $source_domain != $target_domain ]
-            then
-                output="$source_domain""2""$target_domain"
-                echo $output
-            fi
-        done
-    done
-done
+DATA="/home/zhao/data/DA"
+
+CUDA_VISIBLE_DEVICES=0 python tools/train.py \
+--root $DATA \
+--trainer SourceOnly \
+--source-domains webcam \
+--target-domains dslr \
+--dataset-config-file configs/datasets/da/office_caltech.yaml \
+--config-file configs/trainers/da/source_only/office_caltech.yaml \
+--output-dir output/source_only/office_caltech_test/webcam2dslr \
+--eval-only \
+--model-dir output/source_only/office_caltech/webcam \
+--load-epoch 30

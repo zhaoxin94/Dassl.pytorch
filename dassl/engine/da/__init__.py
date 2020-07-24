@@ -10,3 +10,5 @@ from .source_only_shot import SourceOnlyShot
 from .shot import SHOT
 from .kd import KD
 from .self_ensembling import SelfEnsembling
+from .msfda import MSFDA
+

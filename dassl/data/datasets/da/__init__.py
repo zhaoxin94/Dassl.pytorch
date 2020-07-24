@@ -6,3 +6,4 @@ from .domainnet import DomainNet
 from .office_home import OfficeHome
 from .mini_domainnet import miniDomainNet
 from .digit import Digit
+from .office_caltech import OfficeCaltech

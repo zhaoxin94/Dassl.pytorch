@@ -1,0 +1,29 @@
+TRAIN_FROM_SCRATCH: True
+
+DATALOADER:
+  TRAIN_X:
+    BATCH_SIZE: 64
+  TEST:
+    BATCH_SIZE: 64
+
+OPTIM:
+  NAME: 'sgd'
+  LR: 0.01
+  MAX_EPOCH: 40
+  STAGED_LR: True
+  NEW_LAYERS: ('head', 'classifier')
+
+MODEL:
+  BACKBONE:
+    NAME: 'resnet101'
+  HEAD:
+    NAME: 'mlp'
+    HIDDEN_LAYERS: [256]
+    DROPOUT: 0.5
+
+TRAIN:
+  PRINT_FREQ: 10
+
+TEST:
+  SPLIT: 'test'
+  NO_TEST: False

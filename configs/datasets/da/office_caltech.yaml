@@ -3,4 +3,4 @@ INPUT:
   TRANSFORMS: ['random_flip', 'random_translation', 'normalize']
 
 DATASET:
-  NAME: 'DomainNet'
+  NAME: 'OfficeCaltech'
