@@ -10,3 +10,7 @@ OPTIM:
   STEPSIZE: [30]
   MAX_EPOCH: 30
   LR_SCHEDULER: 'cosine'
+
+TEST:
+  SPLIT: 'test'
+  NO_TEST: True

@@ -9,6 +9,7 @@ DATALOADER:
 OPTIM:
   NAME: 'sgd'
   LR: 0.01
+  STEPSIZE: [100]
   MAX_EPOCH: 40
   STAGED_LR: True
   NEW_LAYERS: ('head', 'classifier')
@@ -26,4 +27,4 @@ TRAIN:
 
 TEST:
   SPLIT: 'test'
-  NO_TEST: False
+  NO_TEST: True
