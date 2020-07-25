@@ -13,4 +13,4 @@ OPTIM:
 
 TEST:
   SPLIT: 'test'
-  NO_TEST: True
+  NO_TEST: False
