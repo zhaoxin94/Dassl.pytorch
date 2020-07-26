@@ -11,4 +11,6 @@ from .shot import SHOT
 from .kd import KD
 from .self_ensembling import SelfEnsembling
 from .msfda import MSFDA
+from .sfda_sum import MSFDAS
+
 

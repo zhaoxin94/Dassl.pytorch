@@ -25,8 +25,8 @@ class SourceOnlyShot(TrainerXU):
             'acc': compute_accuracy(output, label)[0].item()
         }
 
-        # if (self.batch_idx + 1) == self.num_batches:
-        #    self.update_lr()
+        if (self.batch_idx + 1) == self.num_batches:
+            self.update_lr()
 
         return loss_summary
 

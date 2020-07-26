@@ -21,11 +21,12 @@ MODEL:
     NAME: 'mlp'
     HIDDEN_LAYERS: [256]
     DROPOUT: 0.5
+  CLASSIFIER:
+    TYPE: 'weight'
 
 TRAIN:
   PRINT_FREQ: 2
 
 TEST:
   SPLIT: 'test'
-  NO_TEST: False
-  
+  NO_TEST: True
