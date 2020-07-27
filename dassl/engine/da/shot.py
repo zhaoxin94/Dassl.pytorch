@@ -85,7 +85,10 @@ class SHOT(TrainerXU):
         input_u, label = self.parse_batch_train(batch_u)
         with torch.no_grad():
             # _, features = self.model(input_u, return_feature=True)
-            features = self.netH(self.netB(input_u))
+            if self.model.head is not None:
+                features = self.netH(self.netB(input_u))
+            else:
+                features = self.netB(input_u)
             pred = self.obtain_label(features, self.center)
 
         outputs, features = self.model(input_u, return_feature=True)
@@ -127,7 +130,10 @@ class SHOT(TrainerXU):
                 labels = data['label']
                 inputs = inputs.to(self.device)
                 # outputs, feas = self.model(inputs, return_feature=True)
-                feas = self.netH(self.netB(inputs))
+                if self.model.head is not None:
+                    feas = self.netH(self.netB(inputs))
+                else:
+                    feas = self.netB(inputs)
                 outputs = self.model.classifier(feas)
                 if start_test:
                     all_fea = feas.float().cpu()
@@ -183,9 +189,12 @@ class SHOT(TrainerXU):
         # self.fix_model.load_state_dict(self.model.state_dict())
         # self.fix_model.eval()
         self.netB = copy.deepcopy(self.model.backbone)
-        self.netH = copy.deepcopy(self.model.head)
         self.netB.eval()
-        self.netH.eval()
+        
+        if self.model.head is not None:
+            self.netH = copy.deepcopy(self.model.head)
+            self.netH.eval()
+
         self.center = self.obtain_center()
 
         end = time.time()

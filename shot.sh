@@ -19,7 +19,7 @@ then
 fi
 
 # pipeline
-for (( i=1; i<=$times; i++ ))
+for (( i=5; i<=$times; i++ ))
 do
     dir_suffix=$i
 
