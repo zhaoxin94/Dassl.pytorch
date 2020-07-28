@@ -20,7 +20,7 @@ TRAINER:
 
 MODEL:
   BACKBONE:
-    NAME: 'resnet101'
+    NAME: 'resnet50'
   HEAD:
     NAME: 'mlp'
     HIDDEN_LAYERS: [256]
@@ -33,4 +33,4 @@ TRAIN:
 
 TEST:
   SPLIT: 'test'
-  NO_TEST: True
+  NO_TEST: False

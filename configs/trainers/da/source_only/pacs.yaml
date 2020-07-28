@@ -16,13 +16,12 @@ OPTIM:
 
 MODEL:
   BACKBONE:
-    NAME: 'resnet50'
+    NAME: 'resnet18'
+    PRETRAINED: True
   HEAD:
     NAME: 'mlp'
     HIDDEN_LAYERS: [256]
     DROPOUT: 0.5
-  CLASSIFIER:
-    TYPE: 'weight'
 
 TRAIN:
   PRINT_FREQ: 2
@@ -30,3 +29,4 @@ TRAIN:
 TEST:
   SPLIT: 'test'
   NO_TEST: False
+  
