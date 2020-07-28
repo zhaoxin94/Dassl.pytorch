@@ -2,7 +2,9 @@
 
 DATA="/home/zhao/data/DA"
 dataset=$1
-times=$2
+start_num=$2
+end_num=$3
+gpu=$4
 
 if [ $dataset = "office_caltech" ]
 then
@@ -10,6 +12,9 @@ then
 elif [ $dataset = "office_home" ]
 then    
     domain_list="art clipart product real_world"
+elif [ $dataset = "pacs" ]
+then
+    domain_list="art_painting cartoon photo sketch"
 elif [ $dataset = "domainnet" ]
 then    
     domain_list="clipart infograph painting quickdraw real sketch"
@@ -18,7 +23,8 @@ then
     domain_list="mnist mnist_m svhn syn usps"
 fi
 
-for (( i=1; i<=$times; i++ ))
+
+for (( i=$start_num; i<=$end_num; i++ ))
 do
     # muti-source 
     dir_suffix=$i
@@ -37,7 +43,7 @@ do
         dataset_cfg="configs/datasets/da/"$dataset".yaml"
         cfg="configs/trainers/da/source_only/"$dataset".yaml"
 
-        CUDA_VISIBLE_DEVICES=1 python tools/train.py \
+        CUDA_VISIBLE_DEVICES=$gpu python tools/train.py \
         --root $DATA \
         --trainer SourceOnly \
         --source-domains $source_domains \

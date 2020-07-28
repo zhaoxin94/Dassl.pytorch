@@ -2,29 +2,34 @@
 
 DATA="/home/zhao/data/DA"
 dataset=$1
-times=$2
+start_num=$2
+end_num=$3
+gpu=$4
+
+epoch=30
 
 if [ $dataset = "office_caltech" ]
 then
     domain_list="amazon webcam dslr caltech"
-elif [ $dataset = "office31" ]
-then    
-    domain_list="art clipart product"
 elif [ $dataset = "office_home" ]
 then    
     domain_list="art clipart product real_world"
+elif [ $dataset = "pacs" ]
+then
+    domain_list="art_painting cartoon photo sketch"
 elif [ $dataset = "domainnet" ]
 then    
     domain_list="clipart infograph painting quickdraw real sketch"
+    epoch=40
 elif [ $dataset = "digit5" ]
 then    
     domain_list="mnist mnist_m svhn syn usps"
 fi
 
 # pipeline
-for (( i=1; i<=$times; i++ ))
+for (( i=$start_num; i<=$end_num; i++ ))
 do
-    dir_suffix=$i"_ResNet-50"
+    dir_suffix=$i
 
     # source_only_shot model training
     for source_domain in $domain_list
@@ -35,7 +40,7 @@ do
         cfg="configs/trainers/da/source_only_shot/"$dataset".yaml"
         output_dir="output/source_only_shot/"$dataset"_train/"$dir_suffix"/"$source_domain
 
-        CUDA_VISIBLE_DEVICES=0 python tools/train.py \
+        CUDA_VISIBLE_DEVICES=$gpu python tools/train.py \
         --root $DATA \
         --trainer SourceOnlyShot \
         --source-domains $source_domain \
@@ -60,7 +65,7 @@ do
                 output_dir="output/source_only_shot/"$dataset"_test/"$dir_suffix"/"$task
                 model_dir="output/source_only_shot/"$dataset"_train/"$dir_suffix"/"$source_domain
 
-                CUDA_VISIBLE_DEVICES=0 python tools/train.py \
+                CUDA_VISIBLE_DEVICES=$gpu python tools/train.py \
                 --root $DATA \
                 --trainer SourceOnlyShot \
                 --source-domains $source_domain \
@@ -70,7 +75,7 @@ do
                 --output-dir $output_dir \
                 --eval-only \
                 --model-dir $model_dir \
-                --load-epoch 30
+                --load-epoch $epoch
             fi
         done
     done
@@ -93,7 +98,7 @@ do
         cfg="configs/trainers/da/source_only_shot/"$dataset".yaml"
         model_dir="output/source_only_shot/"$dataset"_train/"$dir_suffix
 
-        CUDA_VISIBLE_DEVICES=0 python tools/train.py \
+        CUDA_VISIBLE_DEVICES=$gpu python tools/train.py \
         --root $DATA \
         --trainer MSFDA \
         --source-domains $source_domains \
@@ -103,7 +108,7 @@ do
         --output-dir $output_dir \
         --eval-only \
         --model-dir $model_dir \
-        --load-epoch 30
+        --load-epoch $epoch
     done
 
     # shot training
@@ -120,7 +125,7 @@ do
                 task=$source_domain"2"$target_domain
                 output_dir="output/shot/"$dataset"_train/"$dir_suffix"/"$task
 
-                CUDA_VISIBLE_DEVICES=0 python tools/train.py \
+                CUDA_VISIBLE_DEVICES=$gpu python tools/train.py \
                 --root $DATA \
                 --trainer SHOT \
                 --source-domains $source_domain \
@@ -152,7 +157,7 @@ do
 
         model_dir="output/shot/"$dataset"_train/"$dir_suffix
 
-        CUDA_VISIBLE_DEVICES=0 python tools/train.py \
+        CUDA_VISIBLE_DEVICES=$gpu python tools/train.py \
         --root $DATA \
         --trainer MSFDAS \
         --source-domains $source_domains \
@@ -162,7 +167,7 @@ do
         --output-dir $output_dir \
         --eval-only \
         --model-dir $model_dir \
-        --load-epoch 30
+        --load-epoch $epoch
     done
 
 done
